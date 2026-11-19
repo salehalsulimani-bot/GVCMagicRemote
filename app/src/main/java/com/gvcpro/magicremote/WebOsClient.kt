@@ -39,7 +39,7 @@ class WebOsClient(
     @Volatile private var userDisconnected = false
 
     private var lastIp: String = ""
-    private var lastUseSecure: Boolean = false
+    private var lastUseSecure: Boolean = true
     private var msgId = 1
     private var isMuted = false
     @Volatile private var isConnected = false
@@ -72,14 +72,14 @@ class WebOsClient(
                 pointerSocket?.send("type:move\ndx:$sendDx\ndy:$sendDy\ndown:0\n\n")
             }
 
-            mainHandler.postDelayed(this, 33L)
+            mainHandler.postDelayed(this, 22L)
         }
     }
 
     private fun log(message: String) {
         Log.d(TAG, message)
         val ts = timeFormat.format(Date())
-        onLogMessage("[$ts] $message")
+        onLogMessage("[$ts]$message")
     }
 
     @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
@@ -101,7 +101,7 @@ class WebOsClient(
             .build()
     }
 
-    fun connect(ip: String, useSecureWss: Boolean = false) {
+    fun connect(ip: String, useSecureWss: Boolean = true) {
         cleanupSockets()
         userDisconnected = false
         lastIp = ip
@@ -130,7 +130,7 @@ class WebOsClient(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 if (mySession != commandSession) return
-                log("Failure: ${t.javaClass.simpleName}: ${t.message}")
+                log("Failure: ${t.javaClass.simpleName}:${t.message}")
                 isConnected = false
                 pointerSocket = null
                 stopPointerLoop()
@@ -185,7 +185,7 @@ class WebOsClient(
 
         val manifest = JSONObject().apply {
             put("manifestVersion", 1)
-            put("appVersion", "1.6")
+            put("appVersion", "1.7")
             put("permissions", permissions)
         }
 
@@ -216,7 +216,7 @@ class WebOsClient(
 
             if (type == "error") {
                 val errorMsg = json.optString("error", "خطأ غير معروف")
-                log("ERROR [$id]: $errorMsg")
+                log("ERROR [$id]:$errorMsg")
                 onStatusChanged("خطأ: $errorMsg")
                 return
             }
@@ -344,43 +344,12 @@ class WebOsClient(
         socket.send("type:button\nname:$buttonName\n\n")
     }
 
-    fun toggleMute() {
-        isMuted = !isMuted
-        sendSsapCommand("ssap://audio/setMute", JSONObject().put("mute", isMuted))
-    }
-
-    fun sendSsapCommand(uri: String, payload: JSONObject? = null) {
-        if (!isConnected) {
-            reconnectIfNeeded()
-            return
+    fun sendText(text: String) {
+        val payload = JSONObject().apply {
+            put("text", text)
+            put("replace", 0)
         }
-        val req = JSONObject().apply {
-            put("type", "request")
-            put("id", "cmd_${msgId++}")
-            put("uri", uri)
-            if (payload != null) put("payload", payload)
-        }
-        val msg = req.toString()
-        log("TX >>> $msg")
-        commandSocket?.send(msg)
+        sendSsapCommand("ssap://com.webos.service.ime/insertText", payload)
     }
 
-    fun getLastIp(): String = prefs.getString("last_ip", "") ?: ""
-
-    private fun cleanupSockets() {
-        commandSession++
-        pointerSession++
-        isConnected = false
-        stopPointerLoop()
-        mainHandler.removeCallbacksAndMessages(null)
-        pointerSocket?.close(1000, null)
-        pointerSocket = null
-        commandSocket?.close(1000, null)
-        commandSocket = null
-    }
-
-    fun disconnect() {
-        userDisconnected = true
-        cleanupSockets()
-    }
-}
+    fun send
