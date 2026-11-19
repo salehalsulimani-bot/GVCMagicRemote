@@ -141,7 +141,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         ).forEach { (id, key) ->
             findViewById<Button>(id).setOnClickListener { vibrateClick(); webOsClient.sendButton(key) }
         }
-
         switchAirMouse.setOnCheckedChangeListener { _, isChecked ->
             isAirMouseEnabled = isChecked
             webOsClient.isAirMouseDesired = isChecked
@@ -195,8 +194,17 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private fun startAirMouse() {
         lastTimestampNs = 0L; filteredYaw = 0.0f; filteredPitch = 0.0f
         gyroscope?.let {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST)
-            webOsClient.startPointerLoop()
+            try {
+                sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
+                webOsClient.startPointerLoop()
+            } catch (e: Exception) {
+                isAirMouseEnabled = false
+                webOsClient.isAirMouseDesired = false
+                findViewById<SwitchCompat>(R.id.switchAirMouse).isChecked = false
+                val err = "AirMouse error: ${e.javaClass.simpleName}: ${e.message}"
+                findViewById<TextView>(R.id.tvLogOutput).append("$err\n")
+                Toast.makeText(this, err, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
