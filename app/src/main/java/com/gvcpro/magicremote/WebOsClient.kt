@@ -30,6 +30,7 @@ class WebOsClient(
     @Volatile private var pointerSession = 0
     @Volatile private var userDisconnected = false
     @Volatile private var isConnected = false
+    @Volatile private var isReconnectScheduled = false
 
     private var lastIp = ""
     private var lastUseSecure = true
@@ -63,6 +64,17 @@ class WebOsClient(
         }
     }
 
+    private val pointerKeepAliveRunnable = object : Runnable {
+        override fun run() {
+            val s = pointerSocket
+            if (isConnected && s != null) {
+                s.send("type:move\ndx:0\ndy:0\ndown:0\n\n")
+                log("Pointer KeepAlive TX")
+                mainHandler.postDelayed(this, 8000L)
+            }
+        }
+    }
+
     private fun log(msg: String) {
         Log.d("WebOS_Client", msg)
         onLogMessage("[${timeFormat.format(Date())}] $msg")
@@ -86,6 +98,7 @@ class WebOsClient(
     fun connect(ip: String, useSecureWss: Boolean = true) {
         cleanupSockets()
         userDisconnected = false
+        isReconnectScheduled = false
         lastIp = ip
         lastUseSecure = useSecureWss
         val mySession = ++commandSession
@@ -99,6 +112,7 @@ class WebOsClient(
             override fun onOpen(ws: WebSocket, res: Response) {
                 if (mySession != commandSession) return
                 isConnected = true
+                isReconnectScheduled = false
                 sendHandshake()
             }
             override fun onMessage(ws: WebSocket, text: String) {
@@ -108,18 +122,21 @@ class WebOsClient(
             }
             override fun onFailure(ws: WebSocket, t: Throwable, res: Response?) {
                 if (mySession != commandSession) return
-                log("Failure: ${t.message}")
+                log("Failure: ${t.javaClass.name}: ${t.message}")
                 isConnected = false
                 pointerSocket = null
                 stopPointerLoop()
+                mainHandler.removeCallbacks(pointerKeepAliveRunnable)
                 onStatusChanged("انقطع الاتصال، جاري إعادة الربط...")
                 scheduleMainReconnect()
             }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                 if (mySession != commandSession) return
+                log("Closed: $code $reason")
                 isConnected = false
                 pointerSocket = null
                 stopPointerLoop()
+                mainHandler.removeCallbacks(pointerKeepAliveRunnable)
                 onStatusChanged("غير متصل")
                 if (!userDisconnected && code != 1000) scheduleMainReconnect()
             }
@@ -127,13 +144,18 @@ class WebOsClient(
     }
 
     fun reconnectIfNeeded() {
-        if (!userDisconnected && !isConnected && lastIp.isNotEmpty()) connect(lastIp, lastUseSecure)
+        if (!userDisconnected && !isConnected && !isReconnectScheduled && lastIp.isNotEmpty()) {
+            connect(lastIp, lastUseSecure)
+        }
     }
 
     private fun scheduleMainReconnect() {
-        if (userDisconnected || lastIp.isEmpty()) return
-        mainHandler.removeCallbacksAndMessages(null)
-        mainHandler.postDelayed({ if (!userDisconnected && !isConnected) connect(lastIp, lastUseSecure) }, 2500)
+        if (userDisconnected || lastIp.isEmpty() || isReconnectScheduled) return
+        isReconnectScheduled = true
+        mainHandler.postDelayed({
+            isReconnectScheduled = false
+            if (!userDisconnected && !isConnected) connect(lastIp, lastUseSecure)
+        }, 2500L)
     }
 
     private fun sendHandshake() {
@@ -188,23 +210,31 @@ class WebOsClient(
     }
 
     private fun connectPointerSocket(socketUrl: String) {
+        mainHandler.removeCallbacks(pointerKeepAliveRunnable)
         pointerSocket?.close(1000, null)
         pointerSocket = null
         val myPtr = ++pointerSession
         pointerSocket = client.newWebSocket(Request.Builder().url(socketUrl).build(), object : WebSocketListener() {
             override fun onOpen(ws: WebSocket, res: Response) {
                 if (myPtr != pointerSession) return
+                log("Pointer Socket Connected")
                 onStatusChanged("متصل وجاهز للتحكم")
+                mainHandler.removeCallbacks(pointerKeepAliveRunnable)
+                mainHandler.postDelayed(pointerKeepAliveRunnable, 8000L)
                 if (isAirMouseDesired) mainHandler.post { startPointerLoop() }
             }
             override fun onFailure(ws: WebSocket, t: Throwable, res: Response?) {
                 if (myPtr != pointerSession) return
+                log("Pointer Failure: ${t.javaClass.name}: ${t.message}")
+                mainHandler.removeCallbacks(pointerKeepAliveRunnable)
                 pointerSocket = null
                 stopPointerLoop()
                 mainHandler.postDelayed({ if (isConnected) requestPointerSocket() }, 1500)
             }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                 if (myPtr != pointerSession) return
+                log("Pointer Closed: $code $reason")
+                mainHandler.removeCallbacks(pointerKeepAliveRunnable)
                 pointerSocket = null
                 stopPointerLoop()
                 if (isConnected && code != 1000) mainHandler.postDelayed({ if (isConnected) requestPointerSocket() }, 1500)
@@ -265,7 +295,7 @@ class WebOsClient(
     fun getLastIp(): String = prefs.getString("last_ip", "") ?: ""
 
     private fun cleanupSockets() {
-        commandSession++; pointerSession++; isConnected = false
+        commandSession++; pointerSession++; isConnected = false; isReconnectScheduled = false
         stopPointerLoop()
         mainHandler.removeCallbacksAndMessages(null)
         pointerSocket?.close(1000, null); pointerSocket = null
