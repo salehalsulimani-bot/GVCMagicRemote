@@ -69,7 +69,6 @@ class WebOsClient(
             val s = pointerSocket
             if (isConnected && s != null) {
                 s.send("type:move\ndx:0\ndy:0\ndown:0\n\n")
-                log("Pointer KeepAlive TX")
                 mainHandler.postDelayed(this, 8000L)
             }
         }
