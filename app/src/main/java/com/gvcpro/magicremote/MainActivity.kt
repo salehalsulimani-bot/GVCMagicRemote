@@ -1,29 +1,13 @@
 package com.gvcpro.magicremote
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.*
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import android.os.Build
-import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
-import android.view.View
-import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
-import android.widget.Toast
+import android.hardware.*
+import android.os.*
+import android.view.*
+import android.view.inputmethod.*
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.button.MaterialButton
@@ -38,7 +22,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var gyroscope: Sensor? = null
     private var isAirMouseEnabled = false
 
-    private var lastTimestampNs: Long = 0L
+    private var lastTimestampNs = 0L
     private val baseSensitivity = 1150.0f
     private val deadzone = 0.015f
     private var filteredYaw = 0.0f
@@ -78,9 +62,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         webOsClient = WebOsClient(
             context = this,
-            onStatusChanged = { status ->
-                runOnUiThread { tvStatus.text = status }
-            },
+            onStatusChanged = { status -> runOnUiThread { tvStatus.text = status } },
             onLogMessage = { line ->
                 runOnUiThread {
                     tvLogOutput.append("$line\n")
@@ -100,12 +82,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         btnConnect.setOnClickListener {
             val ip = etTvIp.text.toString().trim()
-            if (ip.isNotEmpty()) {
-                webOsClient.connect(ip, switchSecure.isChecked)
-            }
+            if (ip.isNotEmpty()) webOsClient.connect(ip, switchSecure.isChecked)
         }
 
-        // منطق التبديل بين التبويبات الثلاثة
         fun selectTab(index: Int) {
             vibrateClick()
             val activeBg = ColorStateList.valueOf(Color.parseColor("#6D28D9"))
@@ -115,10 +94,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
             tabMenu.backgroundTintList = if (index == 0) activeBg else inactiveBg
             tabMenu.setTextColor(if (index == 0) activeText else inactiveText)
-
             tabNumpad.backgroundTintList = if (index == 1) activeBg else inactiveBg
             tabNumpad.setTextColor(if (index == 1) activeText else inactiveText)
-
             tabKeyboard.backgroundTintList = if (index == 2) activeBg else inactiveBg
             tabKeyboard.setTextColor(if (index == 2) activeText else inactiveText)
 
@@ -137,7 +114,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         tabNumpad.setOnClickListener { selectTab(1) }
         tabKeyboard.setOnClickListener { selectTab(2) }
 
-        // إرسال النص
         val sendCurrentInputText = {
             val text = etKeyboardInput.text.toString()
             if (text.isNotEmpty()) {
@@ -150,37 +126,22 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         btnSendText.setOnClickListener { sendCurrentInputText() }
         etKeyboardInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE) {
-                sendCurrentInputText()
-                true
-            } else {
-                false
-            }
+                sendCurrentInputText(); true
+            } else false
         }
 
-        findViewById<Button>(R.id.btnKeyDelete).setOnClickListener {
-            vibrateClick()
-            webOsClient.sendDeleteCharacters(1)
-        }
-        findViewById<Button>(R.id.btnKeyEnter).setOnClickListener {
-            vibrateClick()
-            webOsClient.sendEnterKey()
-        }
+        findViewById<Button>(R.id.btnKeyDelete).setOnClickListener { vibrateClick(); webOsClient.sendDeleteCharacters(1) }
+        findViewById<Button>(R.id.btnKeyEnter).setOnClickListener { vibrateClick(); webOsClient.sendEnterKey() }
 
-        // أزرار الأرقام (0-9)
-        val numButtons = mapOf(
+        mapOf(
             R.id.btnNum0 to "0", R.id.btnNum1 to "1", R.id.btnNum2 to "2",
             R.id.btnNum3 to "3", R.id.btnNum4 to "4", R.id.btnNum5 to "5",
             R.id.btnNum6 to "6", R.id.btnNum7 to "7", R.id.btnNum8 to "8",
             R.id.btnNum9 to "9", R.id.btnNumDash to "DASH", R.id.btnNumBack to "BACK"
-        )
-        numButtons.forEach { (id, keyName) ->
-            findViewById<Button>(id).setOnClickListener {
-                vibrateClick()
-                webOsClient.sendButton(keyName)
-            }
+        ).forEach { (id, key) ->
+            findViewById<Button>(id).setOnClickListener { vibrateClick(); webOsClient.sendButton(key) }
         }
 
-        // الماوس الهوائي والنقر
         switchAirMouse.setOnCheckedChangeListener { _, isChecked ->
             isAirMouseEnabled = isChecked
             webOsClient.isAirMouseDesired = isChecked
@@ -194,7 +155,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         airMousePad.setOnClickListener(clickAction)
         btnOkCircle.setOnClickListener(clickAction)
 
-        // أزرار التنقل والتحكم
         findViewById<Button>(R.id.btnUp).setOnClickListener { vibrateClick(); webOsClient.sendButton("UP") }
         findViewById<Button>(R.id.btnDown).setOnClickListener { vibrateClick(); webOsClient.sendButton("DOWN") }
         findViewById<Button>(R.id.btnLeft).setOnClickListener { vibrateClick(); webOsClient.sendButton("LEFT") }
@@ -213,7 +173,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         findViewById<Button>(R.id.btnChUp).setOnClickListener { webOsClient.sendSsapCommand("ssap://tv/channelUp") }
         findViewById<Button>(R.id.btnChDown).setOnClickListener { webOsClient.sendSsapCommand("ssap://tv/channelDown") }
 
-        // السجل التقني
         btnToggleLog.setOnClickListener {
             if (logContainer.visibility == View.GONE) {
                 logContainer.visibility = View.VISIBLE
@@ -226,20 +185,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         btnCopyLog.setOnClickListener {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("WebOS Log", tvLogOutput.text.toString())
-            clipboard.setPrimaryClip(clip)
+            clipboard.setPrimaryClip(ClipData.newPlainText("WebOS Log", tvLogOutput.text.toString()))
             Toast.makeText(this, "تم نسخ السجل", Toast.LENGTH_SHORT).show()
         }
 
-        btnClearLog.setOnClickListener {
-            tvLogOutput.text = ""
-        }
+        btnClearLog.setOnClickListener { tvLogOutput.text = "" }
     }
 
     private fun startAirMouse() {
-        lastTimestampNs = 0L
-        filteredYaw = 0.0f
-        filteredPitch = 0.0f
+        lastTimestampNs = 0L; filteredYaw = 0.0f; filteredPitch = 0.0f
         gyroscope?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST)
             webOsClient.startPointerLoop()
@@ -253,11 +207,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (!isAirMouseEnabled || event?.sensor?.type != Sensor.TYPE_GYROSCOPE) return
-
-        if (lastTimestampNs == 0L) {
-            lastTimestampNs = event.timestamp
-            return
-        }
+        if (lastTimestampNs == 0L) { lastTimestampNs = event.timestamp; return }
 
         val dt = (event.timestamp - lastTimestampNs) * 1e-9f
         lastTimestampNs = event.timestamp
@@ -274,38 +224,21 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (speed < deadzone) return
 
         val accelGain = (1.0f + (speed * 1.4f).pow(1.35f)).coerceAtMost(3.2f)
-
-        val dx = -filteredYaw * dt * baseSensitivity * accelGain
-        val dy = -filteredPitch * dt * baseSensitivity * accelGain
-
-        webOsClient.accumulateMouseDelta(dx, dy)
+        webOsClient.accumulateMouseDelta(-filteredYaw * dt * baseSensitivity * accelGain, -filteredPitch * dt * baseSensitivity * accelGain)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     private fun vibrateClick() {
-        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val v = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
         } else {
-            @Suppress("DEPRECATION")
-            getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            @Suppress("DEPRECATION") getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
-        vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+        v.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
-    override fun onPause() {
-        super.onPause()
-        stopAirMouse()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        webOsClient.reconnectIfNeeded()
-        if (isAirMouseEnabled) startAirMouse()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        webOsClient.disconnect()
-    }
+    override fun onPause() { super.onPause(); stopAirMouse() }
+    override fun onResume() { super.onResume(); webOsClient.reconnectIfNeeded(); if (isAirMouseEnabled) startAirMouse() }
+    override fun onDestroy() { super.onDestroy(); webOsClient.disconnect() }
 }
