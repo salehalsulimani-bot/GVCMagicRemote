@@ -16,6 +16,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -31,12 +32,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var gyroscope: Sensor? = null
     private var isAirMouseEnabled = false
 
-    private val sensitivity = 32.0f
-    private val deadzone = 0.025f
+    private val sensitivity = 65.0f
+    private val deadzone = 0.012f
+    private var smoothX = 0.0f
+    private var smoothY = 0.0f
+    private val smoothingFactor = 0.45f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // منع انطفاء شاشة الجوال أثناء استخدام الريموت حتى لا يقطع أندرويد الاتصال
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_main)
 
@@ -48,13 +51,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         val airMousePad = findViewById<MaterialCardView>(R.id.airMousePad)
         val tvLogOutput = findViewById<TextView>(R.id.tvLogOutput)
         val logScrollView = findViewById<ScrollView>(R.id.logScrollView)
+        val logContainer = findViewById<LinearLayout>(R.id.logContainer)
+        val btnToggleLog = findViewById<Button>(R.id.btnToggleLog)
         val btnCopyLog = findViewById<Button>(R.id.btnCopyLog)
         val btnClearLog = findViewById<Button>(R.id.btnClearLog)
 
         webOsClient = WebOsClient(
             context = this,
             onStatusChanged = { status ->
-                runOnUiThread { tvStatus.text = "الحالة: $status" }
+                runOnUiThread { tvStatus.text = status }
             },
             onLogMessage = { line ->
                 runOnUiThread {
@@ -81,11 +86,21 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
         }
 
+        btnToggleLog.setOnClickListener {
+            if (logContainer.visibility == View.GONE) {
+                logContainer.visibility = View.VISIBLE
+                btnToggleLog.text = "إخفاء السجل التقني ▴"
+            } else {
+                logContainer.visibility = View.GONE
+                btnToggleLog.text = "عرض السجل التقني ▾"
+            }
+        }
+
         btnCopyLog.setOnClickListener {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("WebOS Log", tvLogOutput.text.toString())
             clipboard.setPrimaryClip(clip)
-            Toast.makeText(this, "تم نسخ السجل للحافظة", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "تم نسخ السجل", Toast.LENGTH_SHORT).show()
         }
 
         btnClearLog.setOnClickListener {
@@ -103,33 +118,24 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             webOsClient.clickMouse()
         }
 
-        findViewById<Button>(R.id.btnPower).setOnClickListener {
-            webOsClient.sendSsapCommand("ssap://system/turnOff")
-        }
-        findViewById<Button>(R.id.btnHome).setOnClickListener {
-            webOsClient.sendButton("HOME")
-        }
-        findViewById<Button>(R.id.btnBack).setOnClickListener {
-            webOsClient.sendButton("BACK")
-        }
-        findViewById<Button>(R.id.btnMute).setOnClickListener {
-            webOsClient.toggleMute()
-        }
-        findViewById<Button>(R.id.btnVolUp).setOnClickListener {
-            webOsClient.sendSsapCommand("ssap://audio/volumeUp")
-        }
-        findViewById<Button>(R.id.btnVolDown).setOnClickListener {
-            webOsClient.sendSsapCommand("ssap://audio/volumeDown")
-        }
-        findViewById<Button>(R.id.btnChUp).setOnClickListener {
-            webOsClient.sendSsapCommand("ssap://tv/channelUp")
-        }
-        findViewById<Button>(R.id.btnChDown).setOnClickListener {
-            webOsClient.sendSsapCommand("ssap://tv/channelDown")
-        }
+        findViewById<Button>(R.id.btnUp).setOnClickListener { vibrateClick(); webOsClient.sendButton("UP") }
+        findViewById<Button>(R.id.btnDown).setOnClickListener { vibrateClick(); webOsClient.sendButton("DOWN") }
+        findViewById<Button>(R.id.btnLeft).setOnClickListener { vibrateClick(); webOsClient.sendButton("LEFT") }
+        findViewById<Button>(R.id.btnRight).setOnClickListener { vibrateClick(); webOsClient.sendButton("RIGHT") }
+
+        findViewById<Button>(R.id.btnPower).setOnClickListener { webOsClient.sendSsapCommand("ssap://system/turnOff") }
+        findViewById<Button>(R.id.btnHome).setOnClickListener { vibrateClick(); webOsClient.sendButton("HOME") }
+        findViewById<Button>(R.id.btnBack).setOnClickListener { vibrateClick(); webOsClient.sendButton("BACK") }
+        findViewById<Button>(R.id.btnMute).setOnClickListener { vibrateClick(); webOsClient.toggleMute() }
+        findViewById<Button>(R.id.btnVolUp).setOnClickListener { webOsClient.sendSsapCommand("ssap://audio/volumeUp") }
+        findViewById<Button>(R.id.btnVolDown).setOnClickListener { webOsClient.sendSsapCommand("ssap://audio/volumeDown") }
+        findViewById<Button>(R.id.btnChUp).setOnClickListener { webOsClient.sendSsapCommand("ssap://tv/channelUp") }
+        findViewById<Button>(R.id.btnChDown).setOnClickListener { webOsClient.sendSsapCommand("ssap://tv/channelDown") }
     }
 
     private fun startAirMouse() {
+        smoothX = 0.0f
+        smoothY = 0.0f
         gyroscope?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
             webOsClient.startPointerLoop()
@@ -144,11 +150,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (!isAirMouseEnabled || event?.sensor?.type != Sensor.TYPE_GYROSCOPE) return
 
-        val rotX = event.values[0]
-        val rotY = event.values[1]
+        val rawYaw = event.values[2]
+        val rawPitch = event.values[0]
 
-        val dx = if (abs(rotY) > deadzone) -rotY * sensitivity else 0.0f
-        val dy = if (abs(rotX) > deadzone) -rotX * sensitivity else 0.0f
+        smoothX = smoothX + smoothingFactor * (rawYaw - smoothX)
+        smoothY = smoothY + smoothingFactor * (rawPitch - smoothY)
+
+        val dx = if (abs(smoothX) > deadzone) -smoothX * sensitivity else 0.0f
+        val dy = if (abs(smoothY) > deadzone) -smoothY * sensitivity else 0.0f
 
         if (dx != 0.0f || dy != 0.0f) {
             webOsClient.accumulateMouseDelta(dx, dy)
@@ -164,7 +173,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             @Suppress("DEPRECATION")
             getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
-        vibrator.vibrate(VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE))
+        vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
     override fun onPause() {
