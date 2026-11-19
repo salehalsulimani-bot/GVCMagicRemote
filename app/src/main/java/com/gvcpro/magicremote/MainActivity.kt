@@ -13,6 +13,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ScrollView
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // منع انطفاء شاشة الجوال أثناء استخدام الريموت حتى لا يقطع أندرويد الاتصال
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_main)
 
         val etTvIp = findViewById<EditText>(R.id.etTvIp)
@@ -58,14 +61,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     tvLogOutput.append("$line\n")
                     if (tvLogOutput.lineCount > 300) {
                         val t = tvLogOutput.text.toString()
-                        tvLogOutput.text = t.substring(t.length / 2)
+                        val idx = t.indexOf('\n', t.length / 2)
+                        tvLogOutput.text = if (idx != -1) t.substring(idx + 1) else t.substring(t.length / 2)
                     }
                     logScrollView.post { logScrollView.fullScroll(View.FOCUS_DOWN) }
                 }
             }
         )
 
-        etTvIp.setText(webOsClient.getLastIp())
+        val savedIp = webOsClient.getLastIp()
+        etTvIp.setText(savedIp)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
@@ -169,6 +174,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
+        webOsClient.reconnectIfNeeded()
         if (isAirMouseEnabled) startAirMouse()
     }
 
