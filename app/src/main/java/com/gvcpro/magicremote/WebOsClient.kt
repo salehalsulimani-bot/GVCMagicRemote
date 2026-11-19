@@ -36,10 +36,14 @@ class WebOsClient(
     @Volatile var isAirMouseDesired = false
     @Volatile private var commandSession = 0
     @Volatile private var pointerSession = 0
+    @Volatile private var userDisconnected = false
 
+    private var lastIp: String = ""
+    private var lastUseSecure: Boolean = true
     private var msgId = 1
     private var isMuted = false
-    private var isConnected = false
+    @Volatile private var isConnected = false
+
     private val mainHandler = Handler(Looper.getMainLooper())
     private val prefs = context.getSharedPreferences("webos_prefs", Context.MODE_PRIVATE)
     private val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
@@ -93,14 +97,18 @@ class WebOsClient(
         return OkHttpClient.Builder()
             .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
             .hostnameVerifier { _, _ -> true }
-            .pingInterval(15, TimeUnit.SECONDS)
+            .pingInterval(10, TimeUnit.SECONDS)
             .build()
     }
 
     fun connect(ip: String, useSecureWss: Boolean = true) {
-        disconnect()
+        cleanupSockets()
+        userDisconnected = false
+        lastIp = ip
+        lastUseSecure = useSecureWss
         val mySession = ++commandSession
         prefs.edit().putString("last_ip", ip).apply()
+
         val url = if (useSecureWss) "wss://$ip:3001" else "ws://$ip:3000"
         log("Connecting to: $url (session=$mySession)")
         onStatusChanged("جاري الاتصال بـ $url ...")
@@ -124,18 +132,40 @@ class WebOsClient(
                 if (mySession != commandSession) return
                 log("Failure: ${t.javaClass.simpleName}: ${t.message}")
                 isConnected = false
+                pointerSocket = null
                 stopPointerLoop()
-                onStatusChanged("فشل الاتصال: ${t.message}")
+                onStatusChanged("انقطع الاتصال، جاري إعادة المحاولة...")
+                scheduleMainReconnect()
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 if (mySession != commandSession) return
                 log("Command Closed: code=$code reason=$reason")
                 isConnected = false
+                pointerSocket = null
                 stopPointerLoop()
                 onStatusChanged("تم قطع الاتصال ($code)")
+                if (!userDisconnected && code != 1000) {
+                    scheduleMainReconnect()
+                }
             }
         })
+    }
+
+    fun reconnectIfNeeded() {
+        if (!userDisconnected && !isConnected && lastIp.isNotEmpty()) {
+            connect(lastIp, lastUseSecure)
+        }
+    }
+
+    private fun scheduleMainReconnect() {
+        if (userDisconnected || lastIp.isEmpty()) return
+        mainHandler.removeCallbacksAndMessages(null)
+        mainHandler.postDelayed({
+            if (!userDisconnected && !isConnected) {
+                connect(lastIp, lastUseSecure)
+            }
+        }, 2500)
     }
 
     private fun sendHandshake() {
@@ -155,7 +185,7 @@ class WebOsClient(
 
         val manifest = JSONObject().apply {
             put("manifestVersion", 1)
-            put("appVersion", "1.4")
+            put("appVersion", "1.5")
             put("permissions", permissions)
         }
 
@@ -272,7 +302,7 @@ class WebOsClient(
     private fun schedulePointerReconnect() {
         mainHandler.postDelayed({
             if (isConnected) requestPointerSocket()
-        }, 2000)
+        }, 1500)
     }
 
     fun accumulateMouseDelta(dx: Float, dy: Float) {
@@ -298,16 +328,20 @@ class WebOsClient(
     }
 
     fun clickMouse() {
-        val socket = pointerSocket ?: run {
-            onStatusChanged("المؤشر غير متصل")
+        val socket = pointerSocket
+        if (socket == null) {
+            onStatusChanged("جاري إعادة ربط المؤشر...")
+            if (isConnected) requestPointerSocket() else reconnectIfNeeded()
             return
         }
         socket.send("type:click\n\n")
     }
 
     fun sendButton(buttonName: String) {
-        val socket = pointerSocket ?: run {
-            onStatusChanged("المؤشر غير متصل")
+        val socket = pointerSocket
+        if (socket == null) {
+            onStatusChanged("جاري إعادة ربط المؤشر...")
+            if (isConnected) requestPointerSocket() else reconnectIfNeeded()
             return
         }
         log("Pointer TX >>> button:$buttonName")
@@ -320,6 +354,10 @@ class WebOsClient(
     }
 
     fun sendSsapCommand(uri: String, payload: JSONObject? = null) {
+        if (!isConnected) {
+            reconnectIfNeeded()
+            return
+        }
         val req = JSONObject().apply {
             put("type", "request")
             put("id", "cmd_${msgId++}")
@@ -333,7 +371,7 @@ class WebOsClient(
 
     fun getLastIp(): String = prefs.getString("last_ip", "") ?: ""
 
-    fun disconnect() {
+    private fun cleanupSockets() {
         commandSession++
         pointerSession++
         isConnected = false
@@ -343,5 +381,10 @@ class WebOsClient(
         pointerSocket = null
         commandSocket?.close(1000, null)
         commandSocket = null
+    }
+
+    fun disconnect() {
+        userDisconnected = true
+        cleanupSockets()
     }
 }
