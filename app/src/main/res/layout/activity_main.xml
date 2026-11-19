@@ -9,10 +9,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="18dp">
+        android:padding="16dp">
 
-        <!-- البطاقة العلوية: الاتصال والحالة -->
+        <!-- شريط الاتصال المدمج -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -37,24 +38,24 @@
                     <EditText
                         android:id="@+id/etTvIp"
                         android:layout_width="0dp"
-                        android:layout_height="46dp"
+                        android:layout_height="42dp"
                         android:layout_weight="1"
                         android:background="#10131A"
                         android:hint="IP الشاشة (192.168.1.3)"
                         android:inputType="phone"
-                        android:paddingHorizontal="14dp"
+                        android:paddingHorizontal="12dp"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#6E768A"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnConnect"
                         android:layout_width="wrap_content"
-                        android:layout_height="46dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_height="42dp"
+                        android:layout_marginStart="8dp"
                         android:text="اتصال"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         app:backgroundTint="#6D28D9"
                         app:cornerRadius="12dp" />
@@ -63,7 +64,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -71,7 +72,6 @@
                         android:id="@+id/tvStatus"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:text="غير متصل"
                         android:textColor="#9CA3AF"
@@ -81,230 +81,97 @@
                         android:id="@+id/switchSecure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="false"
+                        android:checked="true"
                         android:text="WSS "
                         android:textColor="#9CA3AF"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- شريط الطاقة والماوس الهوائي -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPower"
-                android:layout_width="wrap_content"
-                android:layout_height="46dp"
-                android:text="⏻ إيقاف"
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                app:backgroundTint="#DC2626"
-                app:cornerRadius="12dp" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="46dp"
-                app:cardBackgroundColor="#181B24"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#262B38"
-                app:strokeWidth="1dp">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switchAirMouse"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingHorizontal="14dp"
-                    android:text="الماوس الهوائي  "
-                    android:textColor="#F3F4F6"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <!-- لوحة اللمس والأسهم الدائرية -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/airMousePad"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginTop="14dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="#1A1E2B"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="2dp"
-            app:strokeColor="#3B2F63"
-            app:strokeWidth="1.5dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="12dp">
-
-                <!-- سهم أعلى -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnUp"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="56dp"
-                    android:layout_height="44dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="▲"
-                    android:textColor="#A78BFA"
-                    android:textSize="18sp" />
-
-                <!-- سهم أسفل -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDown"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="56dp"
-                    android:layout_height="44dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="▼"
-                    android:textColor="#A78BFA"
-                    android:textSize="18sp" />
-
-                <!-- سهم يسار -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLeft"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="◀"
-                    android:textColor="#A78BFA"
-                    android:textSize="18sp" />
-
-                <!-- سهم يمين -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRight"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="▶"
-                    android:textColor="#A78BFA"
-                    android:textSize="18sp" />
-
-                <!-- منتصف اللوحة: OK -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OK"
-                        android:textColor="#FFFFFF"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="حرّك الجوال للتوجيه • انقر للاختيار"
-                        android:textColor="#9CA3AF"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- أزرار التحكم الرئيسية -->
+        <!-- القسم العلوي: كتم + زر الطاقة الأحمر + مصادر الإدخال -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:gravity="center"
             android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBack"
-                android:layout_width="0dp"
-                android:layout_height="54dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:text="رجوع"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:backgroundTint="#1F2430"
-                app:cornerRadius="14dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnHome"
-                android:layout_width="0dp"
-                android:layout_height="54dp"
-                android:layout_marginHorizontal="6dp"
-                android:layout_weight="1"
-                android:text="الرئيسية"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:backgroundTint="#6D28D9"
-                app:cornerRadius="14dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMute"
-                android:layout_width="0dp"
-                android:layout_height="54dp"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:text="كتم"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="🔇"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp"
+                android:textSize="20sp"
+                app:backgroundTint="#1E222E"
+                app:cornerRadius="32dp" />
+
+            <Space
+                android:layout_width="32dp"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPower"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="⏻"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
                 android:textStyle="bold"
-                app:backgroundTint="#1F2430"
-                app:cornerRadius="14dp" />
+                app:backgroundTint="#EF4444"
+                app:cornerRadius="36dp" />
+
+            <Space
+                android:layout_width="32dp"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnInput"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="⧉"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                app:backgroundTint="#1E222E"
+                app:cornerRadius="32dp" />
         </LinearLayout>
 
-        <!-- أزرار الصوت والقنوات (بطاقتان عريضتان واضحتان) -->
+        <!-- كبسولتا الصوت والقنوات العموديتان + مفتاح الماوس الهوائي -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <!-- وحدة الصوت -->
+            <!-- كبسولة الصوت -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="#1F2430"
-                app:cardCornerRadius="14dp"
+                android:layout_width="68dp"
+                android:layout_height="136dp"
+                app:cardBackgroundColor="#1E222E"
+                app:cardCornerRadius="34dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnVolDown"
+                        android:id="@+id/btnVolUp"
                         style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="−"
+                        android:text="+"
                         android:textColor="#FFFFFF"
                         android:textSize="22sp" />
 
@@ -313,131 +180,117 @@
                         android:layout_height="wrap_content"
                         android:text="الصوت"
                         android:textColor="#9CA3AF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textSize="11sp" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnVolUp"
+                        android:id="@+id/btnVolDown"
                         style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="+"
+                        android:text="−"
                         android:textColor="#FFFFFF"
-                        android:textSize="20sp" />
+                        android:textSize="24sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- وحدة القنوات -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- منتصف المسافة: مفتاح الماوس الهوائي -->
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginStart="6dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#1F2430"
-                app:cardCornerRadius="14dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#181B24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E3446"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="الماوس الهوائي"
+                            android:textColor="#E5E7EB"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchAirMouse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- كبسولة القنوات -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="68dp"
+                android:layout_height="136dp"
+                app:cardBackgroundColor="#1E222E"
+                app:cardCornerRadius="34dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnChDown"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="▼"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="القنوات"
-                        android:textColor="#9CA3AF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                    android:orientation="vertical">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnChUp"
                         style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="▲"
+                        android:text="⌃"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="القناة"
+                        android:textColor="#9CA3AF"
+                        android:textSize="11sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnChDown"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="⌄"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- زر إظهار/إخفاء السجل التقني (مخفي افتراضياً لمظهر نظيف) -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToggleLog"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="14dp"
-            android:text="عرض السجل التقني ▾"
-            android:textColor="#6B7280"
-            android:textSize="12sp" />
-
+        <!-- شريط التبويبات الثلاثة: القائمة | 123 | لوحة المفاتيح -->
         <LinearLayout
-            android:id="@+id/logContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="44dp"
+            android:layout_marginTop="16dp"
+            android:background="#181B24"
+            android:orientation="horizontal"
+            android:padding="4dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCopyLog"
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
-                    android:layout_marginEnd="6dp"
-                    android:text="نسخ"
-                    android:textColor="#FFFFFF"
-                    android:textSize="11sp"
-                    app:backgroundTint="#1F2430" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnClearLog"
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
-                    android:text="مسح"
-                    android:textColor="#FFFFFF"
-                    android:textSize="11sp"
-                    app:backgroundTint="#1F2430" />
-            </LinearLayout>
-
-            <ScrollView
-                android:id="@+id/logScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="4dp"
-                android:background="#08090D"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/tvLogOutput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:textColor="#34D399"
-                    android:textSize="10sp" />
-            </ScrollView>
-        </LinearLayout>
-
-    </LinearLayout>
-</ScrollView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabMenu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                
