@@ -39,7 +39,7 @@ class WebOsClient(
     @Volatile private var userDisconnected = false
 
     private var lastIp: String = ""
-    private var lastUseSecure: Boolean = true
+    private var lastUseSecure: Boolean = false
     private var msgId = 1
     private var isMuted = false
     @Volatile private var isConnected = false
@@ -72,7 +72,7 @@ class WebOsClient(
                 pointerSocket?.send("type:move\ndx:$sendDx\ndy:$sendDy\ndown:0\n\n")
             }
 
-            mainHandler.postDelayed(this, 16L)
+            mainHandler.postDelayed(this, 33L)
         }
     }
 
@@ -101,7 +101,7 @@ class WebOsClient(
             .build()
     }
 
-    fun connect(ip: String, useSecureWss: Boolean = true) {
+    fun connect(ip: String, useSecureWss: Boolean = false) {
         cleanupSockets()
         userDisconnected = false
         lastIp = ip
@@ -111,7 +111,7 @@ class WebOsClient(
 
         val url = if (useSecureWss) "wss://$ip:3001" else "ws://$ip:3000"
         log("Connecting to: $url (session=$mySession)")
-        onStatusChanged("جاري الاتصال بـ $url ...")
+        onStatusChanged("جاري الاتصال...")
 
         val request = Request.Builder().url(url).build()
         commandSocket = client.newWebSocket(request, object : WebSocketListener() {
@@ -134,7 +134,7 @@ class WebOsClient(
                 isConnected = false
                 pointerSocket = null
                 stopPointerLoop()
-                onStatusChanged("انقطع الاتصال، جاري إعادة المحاولة...")
+                onStatusChanged("انقطع الاتصال، جاري إعادة الربط...")
                 scheduleMainReconnect()
             }
 
@@ -144,7 +144,7 @@ class WebOsClient(
                 isConnected = false
                 pointerSocket = null
                 stopPointerLoop()
-                onStatusChanged("تم قطع الاتصال ($code)")
+                onStatusChanged("غير متصل")
                 if (!userDisconnected && code != 1000) {
                     scheduleMainReconnect()
                 }
@@ -185,7 +185,7 @@ class WebOsClient(
 
         val manifest = JSONObject().apply {
             put("manifestVersion", 1)
-            put("appVersion", "1.5")
+            put("appVersion", "1.6")
             put("permissions", permissions)
         }
 
@@ -205,7 +205,7 @@ class WebOsClient(
         val msg = handshake.toString()
         log("TX >>> register_0 (savedKey=${savedKey != null})")
         commandSocket?.send(msg)
-        onStatusChanged("يرجى قبول طلب الاقتران على شاشة التلفزيون...")
+        onStatusChanged("بانتظار موافقة الشاشة...")
     }
 
     private fun handleMessage(text: String) {
@@ -217,7 +217,7 @@ class WebOsClient(
             if (type == "error") {
                 val errorMsg = json.optString("error", "خطأ غير معروف")
                 log("ERROR [$id]: $errorMsg")
-                onStatusChanged("خطأ من الشاشة ($id): $errorMsg")
+                onStatusChanged("خطأ: $errorMsg")
                 return
             }
 
@@ -227,7 +227,7 @@ class WebOsClient(
                     prefs.edit().putString("client_key", clientKey).apply()
                     log("Saved client-key: $clientKey")
                 }
-                onStatusChanged("متصل بنجاح! جاري طلب مقبس المؤشر...")
+                onStatusChanged("متصل • جاري تفعيل المؤشر...")
                 requestPointerSocket()
             } else if (id == "pointer_req") {
                 val socketPath = json.optJSONObject("payload")?.optString("socketPath")
@@ -236,12 +236,11 @@ class WebOsClient(
                     connectPointerSocket(socketPath)
                 } else {
                     log("WARNING: pointer_req missing socketPath!")
-                    onStatusChanged("الشاشة لم ترسل مسار المؤشر")
+                    onStatusChanged("تعذر فتح مقبس المؤشر")
                 }
             }
         } catch (e: Exception) {
             log("JSON Parse Error: ${e.message}")
-            onStatusChanged("خطأ في تحليل رد الشاشة")
         }
     }
 
@@ -267,7 +266,7 @@ class WebOsClient(
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 if (myPointerSession != pointerSession) return
                 log("Pointer Socket Opened (session=$myPointerSession)")
-                onStatusChanged("متصل + الماوس الهوائي جاهز")
+                onStatusChanged("متصل وجاهز للتحكم")
                 if (isAirMouseDesired) {
                     mainHandler.post { startPointerLoop() }
                 }
@@ -283,7 +282,6 @@ class WebOsClient(
                 log("Pointer Failure: ${t.message}")
                 pointerSocket = null
                 stopPointerLoop()
-                onStatusChanged("انقطع مقبس الماوس، جاري إعادة الربط...")
                 schedulePointerReconnect()
             }
 
@@ -330,7 +328,6 @@ class WebOsClient(
     fun clickMouse() {
         val socket = pointerSocket
         if (socket == null) {
-            onStatusChanged("جاري إعادة ربط المؤشر...")
             if (isConnected) requestPointerSocket() else reconnectIfNeeded()
             return
         }
@@ -340,7 +337,6 @@ class WebOsClient(
     fun sendButton(buttonName: String) {
         val socket = pointerSocket
         if (socket == null) {
-            onStatusChanged("جاري إعادة ربط المؤشر...")
             if (isConnected) requestPointerSocket() else reconnectIfNeeded()
             return
         }
