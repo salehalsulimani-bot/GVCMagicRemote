@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- شريط الاتصال المدمج -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +40,7 @@
                         android:layout_height="42dp"
                         android:layout_weight="1"
                         android:background="#10131A"
-                        android:hint="IP الشاشة (192.168.1.3)"
+                        android:hint="192.168.1.3"
                         android:inputType="phone"
                         android:paddingHorizontal="12dp"
                         android:textColor="#FFFFFF"
@@ -89,7 +88,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- القسم العلوي: كتم + زر الطاقة الأحمر + مصادر الإدخال -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,9 +101,11 @@
                 android:layout_height="64dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="🔇"
+                android:padding="0dp"
+                android:text="كتم"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="13sp"
+                android:textStyle="bold"
                 app:backgroundTint="#1E222E"
                 app:cornerRadius="32dp" />
 
@@ -119,9 +119,10 @@
                 android:layout_height="72dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="⏻"
+                android:padding="0dp"
+                android:text="إيقاف"
                 android:textColor="#FFFFFF"
-                android:textSize="26sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:backgroundTint="#EF4444"
                 app:cornerRadius="36dp" />
@@ -136,14 +137,15 @@
                 android:layout_height="64dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="⧉"
+                android:padding="0dp"
+                android:text="المصدر"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:backgroundTint="#1E222E"
                 app:cornerRadius="32dp" />
         </LinearLayout>
 
-        <!-- كبسولتا الصوت والقنوات العموديتان + مفتاح الماوس الهوائي -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,7 +153,6 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!-- كبسولة الصوت -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="68dp"
                 android:layout_height="136dp"
@@ -194,7 +195,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- منتصف المسافة: مفتاح الماوس الهوائي -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -235,7 +235,6 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- كبسولة القنوات -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="68dp"
                 android:layout_height="136dp"
@@ -255,9 +254,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="⌃"
+                        android:text="▲"
                         android:textColor="#FFFFFF"
-                        android:textSize="22sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -272,14 +271,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="⌄"
+                        android:text="▼"
                         android:textColor="#FFFFFF"
-                        android:textSize="22sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- شريط التبويبات الثلاثة: القائمة | 123 | لوحة المفاتيح -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -323,7 +321,7 @@
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="⌨ الكتابة"
+                android:text="الكتابة"
                 android:textColor="#9CA3AF"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -331,7 +329,6 @@
                 app:cornerRadius="10dp" />
         </LinearLayout>
 
-        <!-- التبويب 1: القائمة (القرص الدائري + أزرار الرئيسية والخروج والرجوع) -->
         <LinearLayout
             android:id="@+id/viewMenuTab"
             android:layout_width="match_parent"
@@ -341,7 +338,6 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <!-- الصف العلوي للقرص: الرئيسية + الإعدادات -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -350,39 +346,42 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnHome"
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="⌂"
+                    android:padding="0dp"
+                    android:text="الرئيسية"
                     android:textColor="#FFFFFF"
-                    android:textSize="22sp"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
                     app:backgroundTint="#1E222E"
-                    app:cornerRadius="29dp" />
+                    app:cornerRadius="30dp" />
 
                 <Space
-                    android:layout_width="140dp"
+                    android:layout_width="136dp"
                     android:layout_height="wrap_content" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSettings"
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="⚙"
+                    android:padding="0dp"
+                    android:text="الضبط"
                     android:textColor="#FFFFFF"
-                    android:textSize="20sp"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
                     app:backgroundTint="#1E222E"
-                    app:cornerRadius="29dp" />
+                    app:cornerRadius="30dp" />
             </LinearLayout>
 
-            <!-- القرص الدائري الكبير (D-Pad + OK) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/airMousePad"
                 android:layout_width="210dp"
                 android:layout_height="210dp"
-                android:layout_marginVertical="-18dp"
+                android:layout_marginVertical="-16dp"
                 android:clickable="true"
                 android:focusable="true"
                 app:cardBackgroundColor="#1E222E"
@@ -402,8 +401,9 @@
                         android:layout_height="48dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
+                        android:padding="0dp"
                         android:text="▲"
-                        android:textColor="#9CA3AF"
+                        android:textColor="#A78BFA"
                         android:textSize="16sp" />
 
                     <com.google.android.material.button.MaterialButton
@@ -413,8 +413,9 @@
                         android:layout_height="48dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
+                        android:padding="0dp"
                         android:text="▼"
-                        android:textColor="#9CA3AF"
+                        android:textColor="#A78BFA"
                         android:textSize="16sp" />
 
                     <com.google.android.material.button.MaterialButton
@@ -424,9 +425,10 @@
                         android:layout_height="56dp"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:text="◀"
-                        android:textColor="#9CA3AF"
-                        android:textSize="16sp" />
+                        android:padding="0dp"
+                        android:text="‹"
+                        android:textColor="#A78BFA"
+                        android:textSize="28sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnRight"
@@ -435,11 +437,11 @@
                         android:layout_height="56dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:text="▶"
-                        android:textColor="#9CA3AF"
-                        android:textSize="16sp" />
+                        android:padding="0dp"
+                        android:text="›"
+                        android:textColor="#A78BFA"
+                        android:textSize="28sp" />
 
-                    <!-- دائرة OK المركزية -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnOkCircle"
                         android:layout_width="82dp"
@@ -465,7 +467,6 @@
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- الصف السفلي للقرص: خروج + رجوع -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -474,35 +475,38 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnExit"
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="خروج"
                     android:textColor="#FFFFFF"
                     android:textSize="11sp"
+                    android:textStyle="bold"
                     app:backgroundTint="#1E222E"
-                    app:cornerRadius="29dp" />
+                    app:cornerRadius="30dp" />
 
                 <Space
-                    android:layout_width="140dp"
+                    android:layout_width="136dp"
                     android:layout_height="wrap_content" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnBack"
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="↩"
+                    android:padding="0dp"
+                    android:text="رجوع"
                     android:textColor="#FFFFFF"
-                    android:textSize="22sp"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
                     app:backgroundTint="#1E222E"
-                    app:cornerRadius="29dp" />
+                    app:cornerRadius="30dp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- التبويب 2: لوحة الأرقام الدائرية (123) -->
         <LinearLayout
             android:id="@+id/viewNumpadTab"
             android:layout_width="match_parent"
@@ -524,6 +528,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="1"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -537,6 +542,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="2"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -550,6 +556,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="3"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -569,6 +576,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="4"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -582,6 +590,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="5"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -595,6 +604,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="6"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -614,6 +624,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="7"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -627,6 +638,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="8"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -640,6 +652,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="9"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -659,6 +672,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="-/-"
                     android:textColor="#9CA3AF"
                     android:textSize="16sp"
@@ -672,6 +686,7 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:padding="0dp"
                     android:text="0"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -685,15 +700,16 @@
                     android:layout_margin="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="↩"
+                    android:padding="0dp"
+                    android:text="رجوع"
                     android:textColor="#A78BFA"
-                    android:textSize="20sp"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
                     app:backgroundTint="#1E222E"
                     app:cornerRadius="34dp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- التبويب 3: لوحة المفاتيح لإرسال النصوص للشاشة -->
         <LinearLayout
             android:id="@+id/viewKeyboardTab"
             android:layout_width="match_parent"
@@ -770,7 +786,7 @@
                             android:layout_height="44dp"
                             android:layout_marginEnd="6dp"
                             android:layout_weight="1"
-                            android:text="⌫ مسح حرف"
+                            android:text="مسح حرف"
                             android:textColor="#F87171"
                             android:textSize="13sp"
                             app:backgroundTint="#232836"
@@ -782,7 +798,7 @@
                             android:layout_height="44dp"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="↵ بحث / موافق"
+                            android:text="بحث / موافق"
                             android:textColor="#34D399"
                             android:textSize="13sp"
                             app:backgroundTint="#232836"
@@ -792,7 +808,6 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- زر إظهار/إخفاء السجل التقني -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnToggleLog"
             style="@style/Widget.Material3.Button.TextButton"
