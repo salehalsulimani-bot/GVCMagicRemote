@@ -293,4 +293,568 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="القائمة"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="#6D28D9"
+                app:cornerRadius="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabNumpad"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="123"
+                android:textColor="#9CA3AF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="#00000000"
+                app:cornerRadius="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabKeyboard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="⌨ الكتابة"
+                android:textColor="#9CA3AF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="#00000000"
+                app:cornerRadius="10dp" />
+        </LinearLayout>
+
+        <!-- التبويب 1: القائمة (القرص الدائري + أزرار الرئيسية والخروج والرجوع) -->
+        <LinearLayout
+            android:id="@+id/viewMenuTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!-- الصف العلوي للقرص: الرئيسية + الإعدادات -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnHome"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="⌂"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="29dp" />
+
+                <Space
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSettings"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="⚙"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="29dp" />
+            </LinearLayout>
+
+            <!-- القرص الدائري الكبير (D-Pad + OK) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/airMousePad"
+                android:layout_width="210dp"
+                android:layout_height="210dp"
+                android:layout_marginVertical="-18dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="#1E222E"
+                app:cardCornerRadius="105dp"
+                app:cardElevation="2dp"
+                app:strokeColor="#2E3446"
+                app:strokeWidth="1.5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnUp"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="56dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="▲"
+                        android:textColor="#9CA3AF"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDown"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="56dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="▼"
+                        android:textColor="#9CA3AF"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLeft"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="48dp"
+                        android:layout_height="56dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="◀"
+                        android:textColor="#9CA3AF"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRight"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="48dp"
+                        android:layout_height="56dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="▶"
+                        android:textColor="#9CA3AF"
+                        android:textSize="16sp" />
+
+                    <!-- دائرة OK المركزية -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btnOkCircle"
+                        android:layout_width="82dp"
+                        android:layout_height="82dp"
+                        android:layout_centerInParent="true"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardBackgroundColor="#282D3D"
+                        app:cardCornerRadius="41dp"
+                        app:cardElevation="2dp"
+                        app:strokeColor="#6D28D9"
+                        app:strokeWidth="1.5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="OK"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- الصف السفلي للقرص: خروج + رجوع -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExit"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="خروج"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="29dp" />
+
+                <Space
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="↩"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="29dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- التبويب 2: لوحة الأرقام الدائرية (123) -->
+        <LinearLayout
+            android:id="@+id/viewNumpadTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum1"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum2"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum3"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum4"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="4"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum5"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="5"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum6"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="6"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum7"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="7"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum8"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="8"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum9"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="9"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNumDash"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="-/-"
+                    android:textColor="#9CA3AF"
+                    android:textSize="16sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNum0"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNumBack"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_margin="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="↩"
+                    android:textColor="#A78BFA"
+                    android:textSize="20sp"
+                    app:backgroundTint="#1E222E"
+                    app:cornerRadius="34dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- التبويب 3: لوحة المفاتيح لإرسال النصوص للشاشة -->
+        <LinearLayout
+            android:id="@+id/viewKeyboardTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#181B24"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#262B38"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="إرسال نص إلى مربع البحث على الشاشة:"
+                        android:textColor="#9CA3AF"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/etKeyboardInput"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:background="#10131A"
+                            android:hint="اكتب هنا..."
+                            android:imeOptions="actionSend"
+                            android:inputType="text"
+                            android:paddingHorizontal="14dp"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#6E768A"
+                            android:textSize="15sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSendText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="8dp"
+                            android:text="إرسال"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#6D28D9"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnKeyDelete"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:text="⌫ مسح حرف"
+                            android:textColor="#F87171"
+                            android:textSize="13sp"
+                            app:backgroundTint="#232836"
+                            app:cornerRadius="12dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnKeyEnter"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="↵ بحث / موافق"
+                            android:textColor="#34D399"
+                            android:textSize="13sp"
+                            app:backgroundTint="#232836"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- زر إظهار/إخفاء السجل التقني -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToggleLog"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:text="عرض السجل التقني ▾"
+            android:textColor="#6B7280"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/logContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCopyLog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="نسخ"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    app:backgroundTint="#1F2430" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnClearLog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:text="مسح"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    app:backgroundTint="#1F2430" />
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/logScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="4dp"
+                android:background="#08090D"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvLogOutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="#34D399"
+                    android:textSize="10sp" />
+            </ScrollView>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
